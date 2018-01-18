@@ -19,7 +19,9 @@ if psutil.LINUX:
 import matplotlib.pyplot as plt
 
 
-theta = np.linspace(0, 180, 91, endpoint=True) * np.pi / 180.0
+theta_degree = np.linspace(0, 180, 91, endpoint=True)
+
+theta = theta_degree * np.pi / 180.0
 cos_theta = np.cos(theta)
 
 zero_array = np.zeros_like(theta)
@@ -30,7 +32,7 @@ figsize = (10, 8)
 fig = plt.figure(figsize=figsize)
 
 legend_str = 'softmax(m=1)'
-line, = plt.plot(theta, cos_theta,
+line, = plt.plot(theta_degree, cos_theta,
                  '-b', LineWidth=2, label=legend_str)
 print line
 ax_hanlders = [line]
@@ -57,7 +59,7 @@ for m in [2, 3, 4]:
 
     legend_str = 'A-Softmax(m=%d, $\\lambda$=0)' % (m)
 
-    line, = plt.plot(theta, Fai[m - 1, :],
+    line, = plt.plot(theta_degree, Fai[m - 1, :],
                      line_styles_0[style_cnt], LineWidth=2, label=legend_str)
     ax_hanlders.append(line)
     legend_strings.append(legend_str)
@@ -109,7 +111,7 @@ for alpha in [2, 3, 4]:
 
     legend_str = 'QA-Softmax(%d*cos$\\theta$-%d)' % (alpha, alpha - 1)
 
-    line, = plt.plot(theta,  alpha * cos_theta - alpha + 1,
+    line, = plt.plot(theta_degree,  alpha * cos_theta - alpha + 1,
                     line_styles_2[style_cnt],
                     LineWidth=2, label=legend_str)
 
@@ -120,6 +122,7 @@ for alpha in [2, 3, 4]:
 
 plt.legend(tuple(ax_hanlders), tuple(legend_strings), loc='lower left')
 # plt.legend(tuple(ax_hanlders), loc='lower left')
+plt.xticks(np.arange(0, 181, 30))
 plt.grid(True)
 
 plt.savefig('QA-Softmax_vs_A-Softmax.png')
