@@ -1,0 +1,2 @@
+  // replace 148 with a valid number in LayerParameter in your caffe.proto
+  optional QuasiAngularMarginInnerProductParameter quasi_angular_margin_inner_product_param = 148;
