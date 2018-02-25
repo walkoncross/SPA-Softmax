@@ -109,7 +109,7 @@ style_cnt = -1
 for alpha in [2, 3, 4]:
     style_cnt = style_cnt + 1
 
-    legend_str = 'QA-Softmax(%d*cos$\\theta$-%d)' % (alpha, alpha - 1)
+    legend_str = 'SPA-Softmax(%d*cos$\\theta$-%d)' % (alpha, alpha - 1)
 
     line, = plt.plot(theta_degree,  alpha * cos_theta - alpha + 1,
                     line_styles_2[style_cnt],
@@ -125,5 +125,5 @@ plt.legend(tuple(ax_hanlders), tuple(legend_strings), loc='lower left')
 plt.xticks(np.arange(0, 181, 30))
 plt.grid(True)
 
-plt.savefig('QA-Softmax_vs_A-Softmax.png')
+plt.savefig('SPA-Softmax_vs_A-Softmax.png')
 plt.show()

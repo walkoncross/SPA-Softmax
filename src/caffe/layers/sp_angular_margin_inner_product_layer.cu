@@ -6,7 +6,7 @@
 #include "caffe/filler.hpp"
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/layers/quasi_angular_margin_inner_product_layer.hpp"
+#include "caffe/layers/SP_angular_margin_inner_product_layer.hpp"
 
 namespace caffe {
 template <typename Dtype>
@@ -124,7 +124,7 @@ __global__ void Margin_Type2_forward_gpu(int nthreads, const int N_,
 // }
 
 template <typename Dtype>
-void QuasiAngularInnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+void SPAngularInnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
 
   const Dtype* bottom_data = bottom[0]->gpu_data();
@@ -156,7 +156,7 @@ void QuasiAngularInnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*
 
     // Modified Inner Product TYPE #1:
     //   + normalized weights
-    //   + Quasi-Angular Marginal Softmax preprocess.
+    //   + SP-Angular Marginal Softmax preprocess.
 
     // variables:
     //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -262,7 +262,7 @@ void QuasiAngularInnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*
     // Modified Inner Product TYPE #4:
     //   + normalized weights
     //   + normalized features
-    //   + Quasi-Angular Marginal Softmax preprocess.
+    //   + SP-Angular Marginal Softmax preprocess.
     //
     // variables:
     //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -341,7 +341,7 @@ void QuasiAngularInnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*
 }
 
 template <typename Dtype>
-void QuasiAngularInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+void SPAngularInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
 
@@ -380,7 +380,7 @@ void QuasiAngularInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>
       case 1: 
         // Modified Inner Product TYPE #1:
         //   + normalized weights
-        //   + Quasi-Angular Marginal Softmax preprocess.
+        //   + SP-Angular Marginal Softmax preprocess.
 
         // variables:
         //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -467,7 +467,7 @@ void QuasiAngularInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>
       // Modified Inner Product TYPE #4:
       //   + normalized weights
       //   + normalized features
-      //   + Quasi-Angular Marginal Softmax preprocess.
+      //   + SP-Angular Marginal Softmax preprocess.
 
       // variables:
       //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -562,7 +562,7 @@ void QuasiAngularInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>
       case 1:
         // Modified Inner Product TYPE #2:
         //   + normalized weights
-        //   + Quasi-Angular Marginal Softmax preprocess.
+        //   + SP-Angular Marginal Softmax preprocess.
 
         // variables:
         //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -672,7 +672,7 @@ void QuasiAngularInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>
         // Modified Inner Product TYPE #4:
         //   + normalized weights
         //   + normalized features
-        //   + Quasi-Angular Marginal Softmax preprocess.
+        //   + SP-Angular Marginal Softmax preprocess.
 
         // variables:
         //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -794,6 +794,6 @@ void QuasiAngularInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>
   }
 }
 
-INSTANTIATE_LAYER_GPU_FUNCS(QuasiAngularInnerProductLayer);
+INSTANTIATE_LAYER_GPU_FUNCS(SPAngularInnerProductLayer);
 
 }  // namespace caffe

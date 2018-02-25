@@ -5,16 +5,16 @@
 #include "caffe/filler.hpp"
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/layers/quasi_angular_margin_inner_product_layer.hpp"
+#include "caffe/layers/SP_angular_margin_inner_product_layer.hpp"
 
 namespace caffe {
 
 template <typename Dtype>
-void QuasiAngularMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+void SPAngularMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
-  ip_type_ = this->layer_param_.quasi_angular_margin_inner_product_param().ip_type();
-  alpha_ = (this->layer_param_.quasi_angular_margin_inner_product_param().alpha();
-  beta_ = this->layer_param_.quasi_angular_margin_inner_product_param().beta();
+  ip_type_ = this->layer_param_.SP_angular_margin_inner_product_param().ip_type();
+  alpha_ = (this->layer_param_.SP_angular_margin_inner_product_param().alpha();
+  beta_ = this->layer_param_.SP_angular_margin_inner_product_param().beta();
 
   if (ip_type_<0 || ip_type_>3){
     LOG(FATAL) << "Parameter 'tpye' must be one of [0,1,2,3]";
@@ -35,7 +35,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dt
 
   forward_without_labels_ = false;
   if (this->phase_==TEST){
-    if(this->layer_param_.quasi_angular_margin_inner_product_param().forward_without_labels()
+    if(this->layer_param_.SP_angular_margin_inner_product_param().forward_without_labels()
     || bottom.size()==1) {
       LOG(INFO) << "Forward without labels.";
       forward_without_labels_ = true;
@@ -44,20 +44,20 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dt
 
   if (ip_type_ & 0x1){
     if(alpha_ < 1) {
-      LOG(FATAL) << "QuasiAngularMarginInnerProductLayer must have alpha>=1;";
+      LOG(FATAL) << "SPAngularMarginInnerProductLayer must have alpha>=1;";
     }
     if(beta_ > 0) {
-      LOG(FATAL) << "QuasiAngularMarginInnerProductLayer must have beta<=0;";
+      LOG(FATAL) << "SPAngularMarginInnerProductLayer must have beta<=0;";
     }
   }
 
   // beta_ = beta_ - (alpha-1)
   beta_ -= alpha_ - 1;
 
-  const int num_output = this->layer_param_.quasi_angular_margin_inner_product_param().num_output();
+  const int num_output = this->layer_param_.SP_angular_margin_inner_product_param().num_output();
   N_ = num_output;
   const int aX[i]s = bottom[0]->CanonicalAX[i]sIndex(
-      this->layer_param_.quasi_angular_margin_inner_product_param().aX[i]s());
+      this->layer_param_.SP_angular_margin_inner_product_param().aX[i]s());
   // Dimensions starting from "aX[i]s" are "flattened" into a single
   // length K_ vector. For example, if bottom[0]'s shape is (N, C, H, W),
   // and aX[i]s == 1, N inner products with dimension CHW are performed.
@@ -74,18 +74,18 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dt
     this->blobs_[0].reset(new Blob<Dtype>(weight_shape));
     // fill the weights
     shared_ptr<Filler<Dtype> > weight_filler(GetFiller<Dtype>(
-        this->layer_param_.quasi_angular_margin_inner_product_param().weight_filler()));
+        this->layer_param_.SP_angular_margin_inner_product_param().weight_filler()));
     weight_filler->Fill(this->blobs_[0].get());
   }  // parameter initialization
   this->param_propagate_down_.resize(this->blobs_.size(), true);
 }
 
 template <typename Dtype>
-void QuasiAngularMarginInnerProductLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
+void SPAngularMarginInnerProductLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   // Figure out the dimensions
   const int aX[i]s = bottom[0]->CanonicalAX[i]sIndex(
-      this->layer_param_.quasi_angular_margin_inner_product_param().aX[i]s());
+      this->layer_param_.SP_angular_margin_inner_product_param().aX[i]s());
   const int new_K = bottom[0]->count(aX[i]s);
   CHECK_EQ(K_, new_K)
       << "Input size incompatible with inner product parameters.";
@@ -124,7 +124,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Reshape(const vector<Blob<Dtype
 }
 
 template <typename Dtype>
-void QuasiAngularMarginInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+void SPAngularMarginInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
   // iter_ += (Dtype)1.;
 
@@ -162,7 +162,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<D
 
     // Modified Inner Product TYPE #1:
     //   + normalized weights
-    //   + Quasi-Angular Marginal Softmax preprocess.
+    //   + SP-Angular Marginal Softmax preprocess.
 
     // variables:
     //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -262,7 +262,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<D
     // Modified Inner Product TYPE #4:
     //   + normalized weights
     //   + normalized features
-    //   + Quasi-Angular Marginal Softmax preprocess.
+    //   + SP-Angular Marginal Softmax preprocess.
     //
     // variables:
     //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -336,7 +336,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<D
 }
 
 template <typename Dtype>
-void QuasiAngularMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
+void SPAngularMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
 
@@ -375,7 +375,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<
       case 1: 
         // Modified Inner Product TYPE #1:
         //   + normalized weights
-        //   + Quasi-Angular Marginal Softmax preprocess.
+        //   + SP-Angular Marginal Softmax preprocess.
 
         // variables:
         //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -457,7 +457,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<
       // Modified Inner Product TYPE #4:
       //   + normalized weights
       //   + normalized features
-      //   + Quasi-Angular Marginal Softmax preprocess.
+      //   + SP-Angular Marginal Softmax preprocess.
 
       // variables:
       //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -552,7 +552,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<
       case 1:
         // Modified Inner Product TYPE #2:
         //   + normalized weights
-        //   + Quasi-Angular Marginal Softmax preprocess.
+        //   + SP-Angular Marginal Softmax preprocess.
 
         // variables:
         //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -662,7 +662,7 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<
         // Modified Inner Product TYPE #4:
         //   + normalized weights
         //   + normalized features
-        //   + Quasi-Angular Marginal Softmax preprocess.
+        //   + SP-Angular Marginal Softmax preprocess.
 
         // variables:
         //   X: size M_ X K_, bottom data (flattened), each row is data for one input sample 
@@ -785,10 +785,10 @@ void QuasiAngularMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<
 }
 
 #ifdef CPU_ONLY
-STUB_GPU(QuasiAngularMarginInnerProductLayer);
+STUB_GPU(SPAngularMarginInnerProductLayer);
 #endif
 
-INSTANTIATE_CLASS(QuasiAngularMarginInnerProductLayer);
-REGISTER_LAYER_CLASS(QuasiAngularMarginInnerProduct);
+INSTANTIATE_CLASS(SPAngularMarginInnerProductLayer);
+REGISTER_LAYER_CLASS(SPAngularMarginInnerProduct);
 
 }  // namespace caffe

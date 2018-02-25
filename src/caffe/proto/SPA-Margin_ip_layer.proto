@@ -1,7 +1,7 @@
 
-// QuasiAngularMarginInnerProduct:
-//   Inner Product for QA-Softmax
-//   (QuasiAngularMarginInnerProduct + Softmax = QA-Softmax)
+// SPAngularMarginInnerProduct:
+//   Inner Product for SPA-Softmax
+//   (SPAngularMarginInnerProduct + Softmax = SPA-Softmax)
 //   Modified version of MarginInnerProduct (which is for A-Softmax).
 //   (MarginInnerProduct + Softmax = A-Softmax)
 //
@@ -13,7 +13,7 @@
 // (3) Inner Product (for A-Softmax): Y[j] = X * W[j] + Bias[j]
 //     Y[j] = |X| * |W[j]| * ( alpha * cosine(<X, W[j]>) + (beta - alpha + 1))
 //     (alpha>1.0, beta<=0)
-message QuasiAngularMarginInnerProductParameter {
+message SPAngularMarginInnerProductParameter {
   optional uint32 num_output = 1; // The number of outputs for the layer
   
   // ip_type: inner product type, [0,1,2,3]
@@ -21,14 +21,14 @@ message QuasiAngularMarginInnerProductParameter {
   //     Inner Product + normalized weights
   // TYPE 1:
   //     Inner Product + normalized weights
-  //                   + Quasi-Angular Marginal Softmax preprocess.
+  //                   + SP-Angular Marginal Softmax preprocess.
   // TYPE 2:
   //     Inner Product + normalized weights
   //                   + normalized features
   // TYPE 3:
   //     Inner Product + normalized weights
   //                   + normalized features
-  //                   + Quasi-Angular Marginal Softmax preprocess.
+  //                   + SP-Angular Marginal Softmax preprocess.
   optional uint32 ip_type = 2 [default = 1]; 
 
   optional FillerParameter weight_filler = 3; // The filler for the weight

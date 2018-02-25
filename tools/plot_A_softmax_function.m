@@ -25,12 +25,12 @@ style_cnt = 0;
 for m=[2 3 4];
 %     if m==3;
 %         continue;
-%     end    
+%     end
     style_cnt = style_cnt + 1;
     for k=0:m-1;
         Fai(m,theta >= k * 180 / m & theta <= (k+1)*180/m) = (-1)^k * cosd(m*theta(theta >= k * 180 / m & theta <=(k+1)*180/m)) - 2 * k;
     end;
-    
+
     legend_str = sprintf('large margin softmax(m=%d, \\lambda=0)', m);
 
     h = plot(theta, Fai(m,:), line_styles_0{style_cnt}, 'LineWidth',2);
@@ -43,7 +43,7 @@ end;
 %plot(theta, (cos_theta * lambda + Fai(4, :)) / (1 + lambda),'LineWidth',2, 'Color', 'r');
 
 line_styles_1 = {
-    {'--r', '-+r', '-sr', '-or', '-dr'}; 
+    {'--r', '-+r', '-sr', '-or', '-dr'};
     {'--g', '-+g', '-sg', '-og', '-dg'};
     {'--m', '-+m', '-sm', '-om', '-dm'};};
 
@@ -54,9 +54,9 @@ for m=[2 3 4];
 %     if m<4;
 %         continue;
 %     end
-    
+
     style_cnt2 = 0;
-    
+
     for lambda=[1 2 5 10];
 %    for lambda=[2 5 10];
         style_cnt2 = style_cnt2 + 1;
@@ -67,7 +67,7 @@ for m=[2 3 4];
 
         ax_hanlders(end+1) = h;
         legend_strings{end + 1, : } = legend_str;
-    end  
+    end
 end
 
 %----- loss functions by zhaoyafei
@@ -75,17 +75,17 @@ end
 % h = plot(theta, 2*cos_theta - 1, '--b','LineWidth',2);
 % ax_hanlders(end+1) = h;
 % legend_strings{end + 1, : } = 'Softmax^2/e';
-% 
+%
 % % 3*cos_theta - 2
 % h = plot(theta, 3*cos_theta - 2, '-+b','LineWidth',2);
 % ax_hanlders(end+1) = h;
 % legend_strings{end + 1, : } = 'Softmax^3/e^2';
-% 
+%
 % % 4*cos_theta - 3
 % h = plot(theta, 4*cos_theta - 3, '-sb','LineWidth',2);
 % ax_hanlders(end+1) = h;
 % legend_strings{end + 1, : } = 'Softmax^4/e^3';
-% 
+%
 % % 5*cos_theta - 4
 % h = plot(theta, 5*cos_theta - 4, '-ob','LineWidth',2);
 % ax_hanlders(end+1) = h;
@@ -104,13 +104,13 @@ for alpha=[2 3 4];
 %for alpha=[1.5 2 2.5 3 3.5 4];
     style_cnt = style_cnt + 1;
 
-    legend_str = sprintf('Modified L-Softmax(%g*cos\\theta-%g)', alpha, alpha-1);
+    legend_str = sprintf('SPA-Softmax(%g*cos\\theta-%g)', alpha, alpha-1);
 
     h = plot(theta,  alpha*cos_theta - alpha+1, line_styles_2{style_cnt}, 'LineWidth', 2);
 
     ax_hanlders(end+1) = h;
     legend_strings{end + 1, : } = legend_str;
-end  
+end
 
 hold off;
 
