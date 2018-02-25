@@ -41,7 +41,7 @@ legend_strings = [legend_str]
 # plt.hold(True)  # deprecated
 
 
-#----- A-softmax loss functions
+#----- logits of A-Softmax loss functions
 Fai = np.zeros((4, theta.shape[0]))
 
 line_styles = ['-r', '-g', '-b']
@@ -98,6 +98,52 @@ for m in [2, 3, 4]:
         ax_hanlders.append(line)
         legend_strings.append(legend_str)
 
+# ----- logits of AMSoftmax
+line_styles = [
+    '-y', '--y', '-.y', '-+y',
+]
+
+style_idx = -1
+
+for m in [0.35, 0.4, 0.45, 0.5]:
+    style_idx = style_idx + 1
+
+    logits = cos_theta - m
+
+    legend_str = 'AMSoftmax(cos$\\theta$-%g)' % (m)
+
+    line, = plt.plot(theta_degree,  logits,
+                     line_styles[style_idx],
+                     LineWidth=1, label=legend_str)
+
+    ax_hanlders.append(line)
+    legend_strings.append(legend_str)
+
+# ----- logits of ArcFace/InsightFace
+
+line_styles = [
+    '-k', '--k', '-.k', '-+k', '-ok', '-sk'
+]
+
+style_idx = -1
+
+for m in [0.5, 0.6, 0.7]:
+    style_idx = style_idx + 1
+
+    logits = np.cos(theta + m)
+
+    legend_str = 'ArcFace(cos($\\theta$-%g))' % (m)
+
+    line, = plt.plot(theta_degree, logits,
+                     line_styles[style_idx],
+                     LineWidth=1, label=legend_str)
+
+    ax_hanlders.append(line)
+    legend_strings.append(legend_str)
+
+# plt.hold(False)  # deprecated
+
+
 # ----- logits of SPA-Softmax loss functions by zhaoyafei
 line_styles = [
     '-c', '--c', '-.c', '-+c',
@@ -123,11 +169,10 @@ for alpha in [1.5, 2, 2.5, 3, 3.5, 4]:
     legend_strings.append(legend_str)
 
 # plt.hold(False)  # deprecated
-
 plt.legend(tuple(ax_hanlders), tuple(legend_strings), loc='lower left')
 # plt.legend(tuple(ax_hanlders), loc='lower left')
 plt.xticks(np.arange(0, 181, 30))
 plt.grid(True)
 
-plt.savefig('SPA-Softmax_vs_A-Softmax.png')
+plt.savefig('Angular_Margin_Logits.png')
 plt.show()
